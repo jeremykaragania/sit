@@ -8,7 +8,11 @@ namespace sit {
 
     variable(const bool value) noexcept : _is_assigned(1), _value(value) {}
 
-    bool is_assigned() const {
+    const bool& is_assigned() const {
+      return _is_assigned;
+    }
+
+    bool& is_assigned() {
       return _is_assigned;
     }
 
@@ -17,10 +21,6 @@ namespace sit {
         throw;
       }
       return _value;
-    }
-
-    void clear() noexcept {
-      _is_assigned = 0;
     }
   private:
     bool _is_assigned;
