@@ -59,6 +59,23 @@ namespace sit {
     std::vector<literal>& data() {
       return _literals;
     }
+
+    void simplify() {
+      std::vector<literal> simplified;
+      for (literal& i : _literals) {
+        bool include = 1;
+        for (literal& j : simplified) {
+          if (&i.data() == &j.data() && i.is_complemented() == j.is_complemented()) {
+            include = 0;
+            break;
+          }
+        }
+        if (include) {
+          simplified.push_back(i);
+        }
+      }
+      _literals = simplified;
+    }
   private:
     std::vector<literal> _literals;
   };
