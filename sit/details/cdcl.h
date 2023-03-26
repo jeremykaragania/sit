@@ -96,12 +96,6 @@ namespace sit {
             exclude.push_back(&j);
             break;
           }
-          for (literal& k : ret.data()) {
-            if (&k.data() == &i.data()) {
-              include = 0;
-              break;
-            }
-          }
         }
         if (include) {
           ret.data().push_back(i);
@@ -114,17 +108,12 @@ namespace sit {
             include = 0;
             break;
           }
-          for (literal& j : ret.data()) {
-            if (&i.data() == &j.data()) {
-              include = 0;
-              break;
-            }
-          }
         }
         if (include) {
           ret.data().push_back(i);
         }
       }
+      ret.simplify();
       return ret;
     }
 
