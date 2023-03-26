@@ -201,7 +201,7 @@ namespace sit {
       for (node& i : _implication_graph) {
         if (i.dl >= b) {
           if (i.var != nullptr) {
-            !i.var->is_assigned();
+            i.var->is_assigned() = !i.var->is_assigned();
           }
         }
         else {
