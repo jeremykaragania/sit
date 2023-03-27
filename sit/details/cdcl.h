@@ -117,10 +117,13 @@ namespace sit {
       return ret;
     }
 
-    bool predicate(std::vector<node*> dl_nodes, clause& w, variable* v) {
+    bool predicate(std::vector<node*> dl_nodes, clause& w, node* n) {
+      if (n->ant == nullptr) {
+        return 0;
+      }
       for (node* i : dl_nodes) {
         for (literal& j : w.data()) {
-          if (v == i->var && v == &j.data()) {
+          if (n->var == i->var && n->var == &j.data()) {
             return 1;
           }
         }
@@ -167,7 +170,7 @@ namespace sit {
         if (vars_in_decision_level(dl_nodes, learned) == 1) {
           break;
         }
-        else if (predicate(dl_nodes, learned, dl_nodes[i]->var) == 1) {
+        else if (predicate(dl_nodes, learned, dl_nodes[i]) == 1) {
           learned = resolve(learned, *dl_nodes[i]->ant);
         }
       }
