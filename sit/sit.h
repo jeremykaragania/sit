@@ -7,5 +7,6 @@
 #include <details/formula.h>
 #include <details/sat_solver.h>
 #include <details/cdcl.h>
+#include <details/dimacs.h>
 
 #endif
