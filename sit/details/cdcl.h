@@ -191,10 +191,8 @@ namespace sit {
     void backtrack(const std::size_t b) {
       std::vector<node> new_ig;
       for (node& i : _implication_graph) {
-        if (i.dl >= b) {
-          if (i.var != nullptr) {
-            i.var->is_assigned() = !i.var->is_assigned();
-          }
+        if (i.dl > b && i.var != nullptr) {
+          i.var->is_assigned() = !i.var->is_assigned();
         }
         else {
           new_ig.push_back(i);
