@@ -49,8 +49,8 @@ namespace sit {
 
     variable* pick_branching_variable() {
       std::vector<literal*> branching_variables;
-      for (clause& i : _formula.data()) {
-        for (literal& j : i.data()) {
+      for (clause& i : _formula.clauses()) {
+        for (literal& j : i.literals()) {
           if (!j.data().is_assigned()) {
             branching_variables.push_back(&j);
           }
@@ -65,13 +65,13 @@ namespace sit {
     }
 
     bool unit_propagation() {
-      for (clause& i : _formula.data()) {
+      for (clause& i : _formula.clauses()) {
         switch(i.state()) {
           case clause_state::unsatisfied:
             _implication_graph.push_back({nullptr, &i, _decision_level});
             return 0;
           case clause_state::unit:
-            for (literal& j : i.data()) {
+            for (literal& j : i.literals()) {
               if (!j.data().is_assigned()) {
                 j.data() = !j.is_complemented();
                 _implication_graph.push_back({&j.data(), &i, _decision_level});
@@ -88,9 +88,9 @@ namespace sit {
     clause resolve(clause& lhs, clause& rhs) {
       clause ret;
       std::vector<literal*> exclude;
-      for (literal & i : lhs.data()) {
+      for (literal & i : lhs.literals()) {
         bool include = 1;
-        for (literal& j : rhs.data()) {
+        for (literal& j : rhs.literals()) {
           if (&i.data() == &j.data() && i.is_complemented() != j.is_complemented()) {
             include = 0;
             exclude.push_back(&j);
@@ -98,10 +98,10 @@ namespace sit {
           }
         }
         if (include) {
-          ret.data().push_back(i);
+          ret.literals().push_back(i);
         }
       }
-      for (literal& i : rhs.data()) {
+      for (literal& i : rhs.literals()) {
         bool include = 1;
         for (literal* j : exclude) {
           if (&i == j) {
@@ -110,7 +110,7 @@ namespace sit {
           }
         }
         if (include) {
-          ret.data().push_back(i);
+          ret.literals().push_back(i);
         }
       }
       ret.simplify();
@@ -122,7 +122,7 @@ namespace sit {
         return 0;
       }
       for (node* i : dl_nodes) {
-        for (literal& j : w.data()) {
+        for (literal& j : w.literals()) {
           if (n->var == i->var && n->var == &j.data()) {
             return 1;
           }
@@ -134,7 +134,7 @@ namespace sit {
     std::size_t vars_in_decision_level(std::vector<node*>& dl_nodes, clause& w) {
       std::size_t ret = 0;
       for (node* i : dl_nodes) {
-        for (literal& j : w.data()) {
+        for (literal& j : w.literals()) {
           if (i->var == &j.data()) {
             ++ret;
           }
@@ -174,11 +174,11 @@ namespace sit {
           learned = resolve(learned, *dl_nodes[i]->ant);
         }
       }
-      _formula.data().push_back(learned);
+      _formula.clauses().push_back(learned);
       std::size_t ret = 0;
-      if (learned.data().size() > 0) {
+      if (learned.literals().size() > 0) {
         std::size_t first = _decision_level;
-        for (literal& i : learned.data()) {
+        for (literal& i : learned.literals()) {
           std::size_t dl = decision_level(&i.data());
           if (dl < first && dl > ret) {
             ret = dl;

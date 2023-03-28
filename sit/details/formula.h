@@ -22,7 +22,7 @@ namespace sit {
       return 1;
     }
 
-    std::vector<clause>& data() {
+    std::vector<clause>& clauses() {
       return _clauses;
     }
   private:

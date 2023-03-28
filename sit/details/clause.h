@@ -56,7 +56,7 @@ namespace sit {
       return 0;
     }
 
-    std::vector<literal>& data() {
+    std::vector<literal>& literals() {
       return _literals;
     }
 
