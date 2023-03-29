@@ -18,8 +18,11 @@ namespace sit {
         ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       }
       ifs.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
-      ifs.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
       std::string buffer;
+      std::getline(ifs, buffer, ' ');
+      if (buffer != "cnf") {
+        throw;
+      }
       std::getline(ifs, buffer, ' ');
       std::size_t variable_number = std::stoull(buffer);
       _variables.resize(variable_number);
