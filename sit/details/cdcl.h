@@ -25,7 +25,7 @@ namespace sit {
             return 1;
           }
           ++_decision_level;
-          variable* branch = pick_branching_variable();
+          literal* branch = pick_branching_literal();
           _implication_graph.push_back({branch, nullptr, _decision_level});
         }
       }
@@ -33,7 +33,7 @@ namespace sit {
 
   private:
     struct node { 
-      variable* var;
+      literal* lit;
       clause* ant;
       std::size_t dl;
     };
@@ -47,21 +47,21 @@ namespace sit {
       return 1;
     }
 
-    variable* pick_branching_variable() {
-      std::vector<literal*> branching_variables;
+    literal* pick_branching_literal() {
+      std::vector<literal*> branching_literals;
       for (clause& i : _formula.clauses()) {
         for (literal& j : i.literals()) {
           if (!j.data().is_assigned()) {
-            branching_variables.push_back(&j);
+            branching_literals.push_back(&j);
           }
         }
       }
       std::random_device rd;
       std::mt19937 mt(rd());
-      std::uniform_int_distribution<> uid(0, branching_variables.size() - 1);
-      literal* branching_variable = branching_variables[uid(mt)];
-      branching_variable->data() = 1 != branching_variable->is_complemented();
-      return &branching_variable->data();
+      std::uniform_int_distribution<> uid(0, branching_literals.size() - 1);
+      literal* branching_literal = branching_literals[uid(mt)];
+      branching_literal->data() = 1 != branching_literal->is_complemented();
+      return branching_literal;
     }
 
     bool unit_propagation() {
@@ -74,7 +74,7 @@ namespace sit {
             for (literal& j : i.literals()) {
               if (!j.data().is_assigned()) {
                 j.data() = !j.is_complemented();
-                _implication_graph.push_back({&j.data(), &i, _decision_level});
+                _implication_graph.push_back({&j, &i, _decision_level});
               }
             }
             if (!unit_propagation()) {
@@ -123,7 +123,7 @@ namespace sit {
       }
       for (node* i : dl_nodes) {
         for (literal& j : w.literals()) {
-          if (n->var == i->var && n->var == &j.data()) {
+          if (n->lit == i->lit && n->lit == &j) {
             return 1;
           }
         }
@@ -131,11 +131,11 @@ namespace sit {
       return 0;
     }
 
-    std::size_t vars_in_decision_level(std::vector<node*>& dl_nodes, clause& w) {
+    std::size_t lits_in_decision_level(std::vector<node*>& dl_nodes, clause& w) {
       std::size_t ret = 0;
       for (node* i : dl_nodes) {
         for (literal& j : w.literals()) {
-          if (i->var == &j.data()) {
+          if (i->lit == &j) {
             ++ret;
           }
         }
@@ -143,13 +143,13 @@ namespace sit {
       return ret;
     }
 
-    std::size_t decision_level(const variable* v) {
-      if (!v->is_assigned()) {
+    std::size_t decision_level(const literal* l) {
+      if (!l->data().is_assigned()) {
         throw;
       }
       std::size_t ret;
       for (node& i : _implication_graph) {
-        if (v == i.var) {
+        if (l == i.lit) {
           ret = i.dl;
           break;
         }
@@ -167,7 +167,7 @@ namespace sit {
       }
       clause learned = *dl_nodes.front()->ant;
       for (std::size_t i = 1; i < dl_nodes.size(); ++i) {
-        if (vars_in_decision_level(dl_nodes, learned) == 1) {
+        if (lits_in_decision_level(dl_nodes, learned) == 1) {
           break;
         }
         else if (predicate(dl_nodes, learned, dl_nodes[i]) == 1) {
@@ -179,7 +179,7 @@ namespace sit {
       if (learned.literals().size() > 0) {
         std::size_t first = _decision_level;
         for (literal& i : learned.literals()) {
-          std::size_t dl = decision_level(&i.data());
+          std::size_t dl = decision_level(&i);
           if (dl < first && dl > ret) {
             ret = dl;
           }
@@ -191,8 +191,8 @@ namespace sit {
     void backtrack(const std::size_t b) {
       std::vector<node> new_ig;
       for (node& i : _implication_graph) {
-        if (i.dl > b && i.var != nullptr) {
-          i.var->is_assigned() = !i.var->is_assigned();
+        if (i.dl > b && i.lit != nullptr) {
+          i.lit->data().is_assigned() = !i.lit->data().is_assigned();
         }
         else {
           new_ig.push_back(i);
