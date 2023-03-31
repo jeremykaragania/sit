@@ -85,33 +85,24 @@ namespace sit {
       return 1;
     }
 
-    clause resolve(clause& lhs, clause& rhs) {
+    clause resolve(node& lhs, clause& rhs) {
       clause ret;
-      std::vector<literal*> exclude;
-      for (literal & i : lhs.literals()) {
-        bool include = 1;
-        for (literal& j : rhs.literals()) {
-          if (&i.data() == &j.data() && i.is_complemented() != j.is_complemented()) {
-            include = 0;
-            exclude.push_back(&j);
-            break;
-          }
+      literal* remove = lhs.lit;
+      bool removed = 0;
+      for (literal& i : lhs.ant->literals()) {
+        if (!removed && &i.data() == &remove->data()) {
+          removed = 1;
+          continue;
         }
-        if (include) {
-          ret.literals().push_back(i);
-        }
+        ret.literals().push_back(i);
       }
+      removed = 0;
       for (literal& i : rhs.literals()) {
-        bool include = 1;
-        for (literal* j : exclude) {
-          if (&i == j) {
-            include = 0;
-            break;
-          }
+        if (!removed && &i.data() == &remove->data() && remove->is_complemented() != i.is_complemented()) {
+          removed = 1;
+          continue;
         }
-        if (include) {
-          ret.literals().push_back(i);
-        }
+        ret.literals().push_back(i);
       }
       ret.simplify();
       return ret;
@@ -171,7 +162,7 @@ namespace sit {
           break;
         }
         else if (predicate(dl_nodes, learned, dl_nodes[i]) == 1) {
-          learned = resolve(learned, *dl_nodes[i]->ant);
+          learned = resolve(*dl_nodes[i], learned);
         }
       }
       _formula.clauses().push_back(learned);
