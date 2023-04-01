@@ -150,14 +150,15 @@ namespace sit {
 
     std::size_t conflict_analysis() {
       std::vector<node*> dl_nodes;
-      for (std::size_t i = 1; i <= _implication_graph.size(); ++i) {
+      for (std::size_t i = 2; i <= _implication_graph.size(); ++i) {
         if (_implication_graph[_implication_graph.size() - i].dl != _decision_level) {
           break;
         }
         dl_nodes.push_back(&_implication_graph[_implication_graph.size() - i]);
       }
-      clause learned = *dl_nodes.front()->ant;
-      for (std::size_t i = 1; i < dl_nodes.size(); ++i) {
+      clause learned = *_implication_graph.back().ant;
+      _implication_graph.pop_back();
+      for (std::size_t i = 0; i < dl_nodes.size(); ++i) {
         if (lits_in_decision_level(dl_nodes, learned) == 1) {
           break;
         }
@@ -182,7 +183,7 @@ namespace sit {
     void backtrack(const std::size_t b) {
       std::vector<node> new_ig;
       for (node& i : _implication_graph) {
-        if (i.dl > b && i.lit != nullptr) {
+        if (i.dl > b) {
           i.lit->data().is_assigned() = !i.lit->data().is_assigned();
         }
         else {
