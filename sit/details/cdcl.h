@@ -109,14 +109,12 @@ namespace sit {
     }
 
     bool predicate(std::vector<node*> dl_nodes, clause& w, node* n) {
-      if (n->ant == nullptr) {
+      if (n->ant == nullptr || n->dl != _decision_level) {
         return 0;
       }
-      for (node* i : dl_nodes) {
-        for (literal& j : w.literals()) {
-          if (n->lit == i->lit && n->lit == &j) {
-            return 1;
-          }
+      for (literal& i : w.literals()) {
+        if (n->lit == &i) {
+          return 1;
         }
       }
       return 0;
