@@ -11,6 +11,9 @@ namespace sit {
     public:
     dimacs(std::string filename) {
       std::ifstream ifs(filename, std::ios::in);
+      if (!ifs.is_open()) {
+        throw;
+      }
       while (1) {
         if ((char)ifs.peek() == 'p') {
           break;
