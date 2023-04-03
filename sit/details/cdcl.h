@@ -85,6 +85,15 @@ namespace sit {
       return 1;
     }
 
+    node* find_node(const literal& l) {
+      for (node& i : _implication_graph) {
+        if (&l.data() == &i.lit->data()) {
+          return &i;
+        }
+      }
+      return nullptr;
+    }
+
     clause resolve(node& lhs, clause& rhs) {
       clause ret;
       literal* remove = lhs.lit;
@@ -132,20 +141,6 @@ namespace sit {
       return ret;
     }
 
-    std::size_t decision_level(const literal* l) {
-      if (!l->data().is_assigned()) {
-        throw;
-      }
-      std::size_t ret;
-      for (node& i : _implication_graph) {
-        if (l == i.lit) {
-          ret = i.dl;
-          break;
-        }
-      }
-      return ret;
-    }
-
     std::size_t conflict_analysis() {
       std::vector<node*> dl_nodes;
       for (std::size_t i = 2; i <= _implication_graph.size(); ++i) {
@@ -169,7 +164,7 @@ namespace sit {
       if (learned.literals().size() > 0) {
         std::size_t first = _decision_level;
         for (literal& i : learned.literals()) {
-          std::size_t dl = decision_level(&i);
+          std::size_t dl = find_node(i)->dl;
           if (dl < first && dl > ret) {
             ret = dl;
           }
