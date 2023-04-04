@@ -174,16 +174,17 @@ namespace sit {
     }
 
     void backtrack(const std::size_t b) {
-      std::vector<node> new_ig;
-      for (node& i : _implication_graph) {
-        if (i.dl > b) {
-          i.lit->data().is_assigned() = !i.lit->data().is_assigned();
-        }
-        else {
-          new_ig.push_back(i);
+      std::size_t new_size = 0;
+      for (std::size_t i = 0; i < _implication_graph.size(); ++i) {
+        if (_implication_graph[i].dl > b) {
+          new_size = i;
+          break;
         }
       }
-      _implication_graph = new_ig;
+      for (std::size_t i = new_size; i < _implication_graph.size(); ++i) {
+        _implication_graph[i].lit->data().is_assigned() = 0;
+      }
+      _implication_graph.resize(new_size);
     }
 
     formula& _formula;
