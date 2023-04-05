@@ -51,7 +51,7 @@ namespace sit {
       std::vector<literal*> branching_literals;
       for (clause& i : _formula.clauses()) {
         for (literal& j : i.literals()) {
-          if (!j.data().is_assigned()) {
+          if (!j.data()->is_assigned()) {
             branching_literals.push_back(&j);
           }
         }
@@ -60,7 +60,7 @@ namespace sit {
       std::mt19937 mt(rd());
       std::uniform_int_distribution<> uid(0, branching_literals.size() - 1);
       literal* branching_literal = branching_literals[uid(mt)];
-      branching_literal->data() = 1 != branching_literal->is_complemented();
+      *branching_literal->data() = 1 != branching_literal->is_complemented();
       return branching_literal;
     }
 
@@ -72,8 +72,8 @@ namespace sit {
             return 0;
           case clause_state::unit:
             for (literal& j : i.literals()) {
-              if (!j.data().is_assigned()) {
-                j.data() = !j.is_complemented();
+              if (!j.data()->is_assigned()) {
+                *j.data() = !j.is_complemented();
                 _implication_graph.push_back({&j, &i, _decision_level});
               }
             }
@@ -87,7 +87,7 @@ namespace sit {
 
     node* find_node(const literal& l) {
       for (node& i : _implication_graph) {
-        if (&l.data() == &i.lit->data()) {
+        if (l.data() == i.lit->data()) {
           return &i;
         }
       }
@@ -99,7 +99,7 @@ namespace sit {
       literal* remove = lhs.lit;
       bool removed = 0;
       for (literal& i : lhs.ant->literals()) {
-        if (!removed && &i.data() == &remove->data()) {
+        if (!removed && i.data() == remove->data()) {
           removed = 1;
           continue;
         }
@@ -107,7 +107,7 @@ namespace sit {
       }
       removed = 0;
       for (literal& i : rhs.literals()) {
-        if (!removed && &i.data() == &remove->data() && remove->is_complemented() != i.is_complemented()) {
+        if (!removed && i.data() == remove->data() && remove->is_complemented() != i.is_complemented()) {
           removed = 1;
           continue;
         }
@@ -182,7 +182,7 @@ namespace sit {
         }
       }
       for (std::size_t i = new_size; i < _implication_graph.size(); ++i) {
-        _implication_graph[i].lit->data().is_assigned() = 0;
+        _implication_graph[i].lit->data()->is_assigned() = 0;
       }
       _implication_graph.resize(new_size);
     }

@@ -18,7 +18,7 @@ namespace sit {
       clause_state s;
       std::vector<literal>::size_type unassigned = 0;
       for (const literal& i : _literals) {
-        if (i.data().is_assigned()) {
+        if (i.data()->is_assigned()) {
           if (i == 1) {
             ++assigned_1;
           }
@@ -65,7 +65,7 @@ namespace sit {
       for (literal& i : _literals) {
         bool include = 1;
         for (literal& j : simplified) {
-          if (&i.data() == &j.data() && i.is_complemented() == j.is_complemented()) {
+          if (i.data() == j.data() && i.is_complemented() == j.is_complemented()) {
             include = 0;
             break;
           }
