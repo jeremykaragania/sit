@@ -33,8 +33,16 @@ namespace sit {
       return _is_complemented != *_variable;
     }
 
-    variable* data() const {
+    const variable* data() const {
       return _variable;
+    }
+
+    variable* data() {
+      return _variable;
+    }
+
+    const bool& is_complemented() const {
+      return _is_complemented;
     }
 
     bool& is_complemented() {

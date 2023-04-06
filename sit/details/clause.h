@@ -56,6 +56,10 @@ namespace sit {
       return 0;
     }
 
+    const std::vector<literal>& literals() const {
+      return _literals;
+    }
+
     std::vector<literal>& literals() {
       return _literals;
     }

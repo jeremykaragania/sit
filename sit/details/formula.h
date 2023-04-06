@@ -22,6 +22,10 @@ namespace sit {
       return 1;
     }
 
+    const std::vector<clause>& clauses() const {
+      return _clauses;
+    }
+
     std::vector<clause>& clauses() {
       return _clauses;
     }
