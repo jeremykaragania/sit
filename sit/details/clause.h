@@ -11,6 +11,8 @@ namespace sit {
   public:
     clause() noexcept {}
 
+    clause(const std::vector<literal> literals) noexcept : _literals(literals) {}
+
     clause(const std::initializer_list<literal> literals) noexcept : _literals(literals) {}
 
     clause_state state() const {
