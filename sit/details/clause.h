@@ -69,7 +69,7 @@ namespace sit {
       for (literal& i : _literals) {
         bool include = 1;
         for (literal& j : simplified) {
-          if (i.data() == j.data() && i.is_complemented() == j.is_complemented()) {
+          if (i.data() == j.data()) {
             include = 0;
             break;
           }

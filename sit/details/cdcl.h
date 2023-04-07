@@ -97,21 +97,15 @@ namespace sit {
     clause resolve(node& lhs, clause& rhs) {
       clause ret;
       literal* remove = lhs.lit;
-      bool removed = 0;
       for (literal& i : lhs.ant->literals()) {
-        if (!removed && i.data() == remove->data()) {
-          removed = 1;
-          continue;
+        if (i.data() != remove->data()) {
+          ret.literals().push_back(i);
         }
-        ret.literals().push_back(i);
       }
-      removed = 0;
       for (literal& i : rhs.literals()) {
-        if (!removed && i.data() == remove->data() && remove->is_complemented() != i.is_complemented()) {
-          removed = 1;
-          continue;
+        if (i.data() != remove->data()) {
+          ret.literals().push_back(i);
         }
-        ret.literals().push_back(i);
       }
       ret.simplify();
       return ret;
