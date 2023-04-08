@@ -66,7 +66,7 @@ namespace sit {
       return _literals;
     }
 
-    void simplify() {
+    clause simplify() {
       std::vector<literal> simplified;
       for (literal& i : _literals) {
         bool include = 1;
@@ -80,7 +80,7 @@ namespace sit {
           simplified.push_back(i);
         }
       }
-      _literals = simplified;
+      return simplified;
     }
   private:
     std::vector<literal> _literals;

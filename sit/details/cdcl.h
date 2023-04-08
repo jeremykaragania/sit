@@ -107,7 +107,7 @@ namespace sit {
           ret.literals().push_back(i);
         }
       }
-      ret.simplify();
+      ret = ret.simplify();
       return ret;
     }
 
