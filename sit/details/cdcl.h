@@ -65,21 +65,26 @@ namespace sit {
     }
 
     bool unit_propagation() {
-      for (clause& i : _formula.clauses()) {
-        switch(i.state()) {
-          case clause_state::unsatisfied:
-            _implication_graph.push_back({nullptr, &i, _decision_level});
-            return 0;
-          case clause_state::unit:
-            for (literal& j : i.literals()) {
-              if (!j.data()->is_assigned()) {
-                *j.data() = !j.is_complemented();
-                _implication_graph.push_back({&j, &i, _decision_level});
-              }
-            }
-            if (!unit_propagation()) {
+      while (1) {
+        bool is_unit = 0;
+        for (clause& i : _formula.clauses()) {
+          switch(i.state()) {
+            case clause_state::unsatisfied:
+              _implication_graph.push_back({nullptr, &i, _decision_level});
               return 0;
-            }
+            case clause_state::unit:
+              for (literal& j : i.literals()) {
+                if (!j.data()->is_assigned()) {
+                  *j.data() = !j.is_complemented();
+                  _implication_graph.push_back({&j, &i, _decision_level});
+                }
+              }
+              is_unit = 1;
+              break;
+          }
+        }
+        if (!is_unit) {
+          break;
         }
       }
       return 1;
