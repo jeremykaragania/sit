@@ -49,8 +49,8 @@ namespace sit {
       return _is_complemented;
     }
   private:
-    bool _is_complemented;
     variable* _variable;
+    bool _is_complemented;
   };
 }
 

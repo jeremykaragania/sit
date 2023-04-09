@@ -9,7 +9,7 @@ namespace sit {
 
   class clause {
   public:
-    clause() noexcept {}
+    clause() noexcept : _literals() {}
 
     clause(const std::vector<literal> literals) noexcept : _literals(literals) {}
 
