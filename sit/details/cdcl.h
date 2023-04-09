@@ -30,7 +30,6 @@ namespace sit {
         }
       }
     }
-
   private:
     struct node { 
       literal* lit;
@@ -117,47 +116,26 @@ namespace sit {
       return ret;
     }
 
-    bool predicate(std::vector<node*> dl_nodes, clause& w, node* n) {
-      if (!n->has_ant || n->dl != _decision_level) {
-        return 0;
-      }
-      for (literal& i : w.literals()) {
-        if (n->lit == &i) {
-          return 1;
-        }
-      }
-      return 0;
-    }
-
-    std::size_t lits_in_decision_level(std::vector<node*>& dl_nodes, clause& w) {
-      std::size_t ret = 0;
-      for (node* i : dl_nodes) {
-        for (literal& j : w.literals()) {
-          if (i->lit == &j) {
-            ++ret;
-          }
-        }
-      }
-      return ret;
-    }
-
     std::size_t conflict_analysis() {
-      std::vector<node*> dl_nodes;
-      for (std::size_t i = 2; i <= _implication_graph.size(); ++i) {
-        if (_implication_graph[_implication_graph.size() - i].dl != _decision_level) {
-          break;
-        }
-        dl_nodes.push_back(&_implication_graph[_implication_graph.size() - i]);
-      }
       clause learned = _formula.clauses()[_implication_graph.back().ant];
       _implication_graph.pop_back();
-      for (std::size_t i = 0; i < dl_nodes.size(); ++i) {
-        if (lits_in_decision_level(dl_nodes, learned) == 1) {
+      learned = learned.simplify();
+      while (1) {
+        std::size_t lits_in_decision_level = 0;
+        node* premise;
+        for (literal& i : learned.literals()) {
+          node* n = find_node(i);
+          if (n!= nullptr && n->dl == _decision_level) {
+            ++lits_in_decision_level;
+            if (n->has_ant) {
+              premise = n;
+            }
+          }
+        }
+        if (lits_in_decision_level == 1) {
           break;
         }
-        else if (predicate(dl_nodes, learned, dl_nodes[i]) == 1) {
-          learned = resolve(*dl_nodes[i], learned);
-        }
+        learned = resolve(*premise, learned);
       }
       _formula.clauses().push_back(learned);
       std::size_t ret = 0;
