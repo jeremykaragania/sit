@@ -26,7 +26,7 @@ namespace sit {
           }
           ++_decision_level;
           literal* branch = pick_branching_literal();
-          _implication_graph.push_back({branch, nullptr, _decision_level});
+          _implication_graph.push_back({branch, 0, 0, _decision_level});
         }
       }
     }
@@ -34,7 +34,8 @@ namespace sit {
   private:
     struct node { 
       literal* lit;
-      clause* ant;
+      bool has_ant;
+      std::size_t ant;
       std::size_t dl;
     };
 
@@ -67,16 +68,16 @@ namespace sit {
     bool unit_propagation() {
       while (1) {
         bool is_unit = 0;
-        for (clause& i : _formula.clauses()) {
-          switch(i.state()) {
+        for (std::size_t i = 0; i < _formula.clauses().size(); ++i) {
+          switch(_formula.clauses()[i].state()) {
             case clause_state::unsatisfied:
-              _implication_graph.push_back({nullptr, &i, _decision_level});
+              _implication_graph.push_back({nullptr, 1, i, _decision_level});
               return 0;
             case clause_state::unit:
-              for (literal& j : i.literals()) {
+              for (literal& j : _formula.clauses()[i].literals()) {
                 if (!j.data()->is_assigned()) {
                   *j.data() = !j.is_complemented();
-                  _implication_graph.push_back({&j, &i, _decision_level});
+                  _implication_graph.push_back({&j, 1, i, _decision_level});
                 }
               }
               is_unit = 1;
@@ -102,7 +103,7 @@ namespace sit {
     clause resolve(node& lhs, clause& rhs) {
       clause ret;
       literal* remove = lhs.lit;
-      for (literal& i : lhs.ant->literals()) {
+      for (literal& i : _formula.clauses()[lhs.ant].literals()) {
         if (i.data() != remove->data()) {
           ret.literals().push_back(i);
         }
@@ -117,7 +118,7 @@ namespace sit {
     }
 
     bool predicate(std::vector<node*> dl_nodes, clause& w, node* n) {
-      if (n->ant == nullptr || n->dl != _decision_level) {
+      if (!n->has_ant || n->dl != _decision_level) {
         return 0;
       }
       for (literal& i : w.literals()) {
@@ -148,7 +149,7 @@ namespace sit {
         }
         dl_nodes.push_back(&_implication_graph[_implication_graph.size() - i]);
       }
-      clause learned = *_implication_graph.back().ant;
+      clause learned = _formula.clauses()[_implication_graph.back().ant];
       _implication_graph.pop_back();
       for (std::size_t i = 0; i < dl_nodes.size(); ++i) {
         if (lits_in_decision_level(dl_nodes, learned) == 1) {
