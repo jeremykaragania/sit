@@ -13,7 +13,6 @@ namespace sit {
     formula(const std::initializer_list<clause> clauses) noexcept : _clauses(clauses) {}
 
     operator bool() {
-      bool value = _clauses[0];
       for (const clause& i : _clauses) {
         if (i == 0) {
           return 0;
