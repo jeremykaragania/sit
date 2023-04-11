@@ -81,6 +81,8 @@ namespace sit {
               }
               is_unit = 1;
               break;
+            default:
+              break;
           }
         }
         if (!is_unit) {
