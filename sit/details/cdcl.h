@@ -60,7 +60,7 @@ namespace sit {
       std::mt19937 mt(rd());
       std::uniform_int_distribution<> uid(0, branching_literals.size() - 1);
       literal* branching_literal = branching_literals[uid(mt)];
-      *branching_literal->data() = 1 != branching_literal->is_complemented();
+      *branching_literal->data() = !branching_literal->is_complemented();
       return branching_literal;
     }
 

@@ -14,7 +14,7 @@ namespace sit {
 
     operator bool() {
       for (const clause& i : _clauses) {
-        if (i == 0) {
+        if (!i) {
           return 0;
         }
       };

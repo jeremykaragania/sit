@@ -21,7 +21,7 @@ namespace sit {
       std::vector<literal>::size_type unassigned = 0;
       for (const literal& i : _literals) {
         if (i.data()->is_assigned()) {
-          if (i == 1) {
+          if (i) {
             ++assigned_1;
           }
         }
@@ -51,7 +51,7 @@ namespace sit {
         throw;
       }
       for (const literal& i : _literals) {
-        if (i == 1) {
+        if (i) {
           return 1;
         }
       }
