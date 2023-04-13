@@ -38,8 +38,8 @@ namespace sit {
       std::size_t dl;
     };
 
-    bool all_variables_assigned() {
-      for (variable& i : _variables) {
+    bool all_variables_assigned() const {
+      for (const variable& i : _variables) {
         if (!i.is_assigned()) {
           return 0;
         }
@@ -47,7 +47,7 @@ namespace sit {
       return 1;
     }
 
-    literal* pick_branching_literal() {
+    literal* pick_branching_literal() const {
       std::vector<literal*> branching_literals;
       for (clause& i : _formula.clauses()) {
         for (literal& j : i.literals()) {
@@ -101,15 +101,15 @@ namespace sit {
       return nullptr;
     }
 
-    clause resolve(node& lhs, clause& rhs) {
+    clause resolve(const node& lhs, const clause& rhs) const {
       clause ret;
       literal* remove = lhs.lit;
-      for (literal& i : _formula.clauses()[lhs.ant].literals()) {
+      for (const literal& i : _formula.clauses()[lhs.ant].literals()) {
         if (i.data() != remove->data()) {
           ret.literals().push_back(i);
         }
       }
-      for (literal& i : rhs.literals()) {
+      for (const literal& i : rhs.literals()) {
         if (i.data() != remove->data()) {
           ret.literals().push_back(i);
         }
@@ -125,7 +125,7 @@ namespace sit {
       while (1) {
         std::size_t lits_in_decision_level = 0;
         node* premise;
-        for (literal& i : learned.literals()) {
+        for (const literal& i : learned.literals()) {
           node* n = find_node(i);
           if (n!= nullptr && n->dl == _decision_level) {
             ++lits_in_decision_level;
@@ -143,7 +143,7 @@ namespace sit {
       std::size_t ret = 0;
       if (learned.literals().size() > 0) {
         std::size_t first = _decision_level;
-        for (literal& i : learned.literals()) {
+        for (const literal& i : learned.literals()) {
           std::size_t dl = find_node(i)->dl;
           if (dl < first && dl > ret) {
             ret = dl;
