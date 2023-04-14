@@ -38,7 +38,7 @@ namespace sit {
       std::size_t dl;
     };
 
-    bool all_variables_assigned() const {
+    bool all_variables_assigned() const noexcept {
       for (const variable& i : _variables) {
         if (!i.is_assigned()) {
           return 0;
@@ -47,7 +47,7 @@ namespace sit {
       return 1;
     }
 
-    literal* pick_branching_literal() const {
+    literal* pick_branching_literal() const noexcept {
       std::vector<literal*> branching_literals;
       for (clause& i : _formula.clauses()) {
         for (literal& j : i.literals()) {
@@ -64,7 +64,7 @@ namespace sit {
       return branching_literal;
     }
 
-    bool unit_propagation() {
+    bool unit_propagation() noexcept {
       while (1) {
         bool is_unit = 0;
         for (std::size_t i = 0; i < _formula.clauses().size(); ++i) {
@@ -92,7 +92,7 @@ namespace sit {
       return 1;
     }
 
-    node* find_node(const literal& l) {
+    node* find_node(const literal& l) noexcept {
       for (node& i : _implication_graph) {
         if (l.data() == i.lit->data()) {
           return &i;
@@ -101,7 +101,7 @@ namespace sit {
       return nullptr;
     }
 
-    clause resolve(const node& lhs, const clause& rhs) const {
+    clause resolve(const node& lhs, const clause& rhs) const noexcept {
       clause ret;
       literal* remove = lhs.lit;
       for (const literal& i : _formula.clauses()[lhs.ant].literals()) {
@@ -118,7 +118,7 @@ namespace sit {
       return ret;
     }
 
-    std::size_t conflict_analysis() {
+    std::size_t conflict_analysis() noexcept {
       clause learned = _formula.clauses()[_implication_graph.back().ant];
       _implication_graph.pop_back();
       learned = learned.simplify();
@@ -153,7 +153,7 @@ namespace sit {
       return ret;
     }
 
-    void backtrack(const std::size_t b) {
+    void backtrack(const std::size_t b) noexcept {
       std::size_t new_size = 0;
       for (std::size_t i = 0; i < _implication_graph.size(); ++i) {
         if (_implication_graph[i].dl > b) {
