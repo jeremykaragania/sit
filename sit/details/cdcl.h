@@ -162,7 +162,7 @@ namespace sit {
         }
       }
       for (std::size_t i = new_size; i < _implication_graph.size(); ++i) {
-        _implication_graph[i].lit->data()->is_assigned() = 0;
+        _implication_graph[i].lit->data()->unassign();
       }
       _implication_graph.resize(new_size);
     }
