@@ -21,11 +21,11 @@ namespace sit {
       return 1;
     }
 
-    const std::vector<clause>& clauses() const {
+    const std::vector<clause>& clauses() const noexcept {
       return _clauses;
     }
 
-    std::vector<clause>& clauses() {
+    std::vector<clause>& clauses() noexcept {
       return _clauses;
     }
   private:

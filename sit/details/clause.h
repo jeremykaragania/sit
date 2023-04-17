@@ -15,7 +15,7 @@ namespace sit {
 
     clause(const std::initializer_list<literal> literals) noexcept : _literals(literals) {}
 
-    clause_state state() const {
+    clause_state state() const noexcept {
       std::vector<literal>::size_type assigned_1 = 0;
       clause_state s;
       std::vector<literal>::size_type unassigned = 0;
@@ -58,15 +58,15 @@ namespace sit {
       return 0;
     }
 
-    const std::vector<literal>& literals() const {
+    const std::vector<literal>& literals() const noexcept {
       return _literals;
     }
 
-    std::vector<literal>& literals() {
+    std::vector<literal>& literals() noexcept {
       return _literals;
     }
 
-    clause simplify() {
+    clause simplify() noexcept {
       std::vector<literal> simplified;
       for (literal& i : _literals) {
         bool include = 1;

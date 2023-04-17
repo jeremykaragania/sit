@@ -33,19 +33,19 @@ namespace sit {
       return _is_complemented != *_variable;
     }
 
-    const variable* data() const {
+    const variable* data() const noexcept {
       return _variable;
     }
 
-    variable* data() {
+    variable* data() noexcept {
       return _variable;
     }
 
-    const bool& is_complemented() const {
+    const bool& is_complemented() const noexcept {
       return _is_complemented;
     }
 
-    bool& is_complemented() {
+    bool& is_complemented() noexcept {
       return _is_complemented;
     }
   private:
