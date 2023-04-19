@@ -22,14 +22,14 @@ namespace sit {
       }
       ifs.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
       std::string buffer;
-      std::getline(ifs, buffer, ' ');
+      ifs >> buffer;
       if (buffer != "cnf") {
         throw;
       }
-      std::getline(ifs, buffer, ' ');
+      ifs >> buffer;
       std::size_t variable_number = std::stoull(buffer);
       _variables.resize(variable_number);
-      std::getline(ifs, buffer, '\n');
+      ifs >> buffer;
       std::size_t clause_number = std::stoull(buffer);
       _formula.clauses().resize(clause_number);
       for (clause& i : _formula.clauses()) {
