@@ -103,14 +103,13 @@ namespace sit {
 
     clause resolve(const node& lhs, const clause& rhs) const noexcept {
       clause ret;
-      literal* remove = lhs.lit;
       for (const literal& i : _formula.clauses()[lhs.ant].literals()) {
-        if (&i.data() != &remove->data()) {
+        if (&i.data() != &lhs.lit->data()) {
           ret.literals().push_back(i);
         }
       }
       for (const literal& i : rhs.literals()) {
-        if (&i.data() != &remove->data()) {
+        if (&i.data() != &lhs.lit->data()) {
           ret.literals().push_back(i);
         }
       }
