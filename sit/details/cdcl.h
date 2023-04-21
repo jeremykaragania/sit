@@ -51,7 +51,7 @@ namespace sit {
       std::vector<literal*> branching_literals;
       for (clause& i : _formula.clauses()) {
         for (literal& j : i.literals()) {
-          if (!j.data()->is_assigned()) {
+          if (!j.data().is_assigned()) {
             branching_literals.push_back(&j);
           }
         }
@@ -60,7 +60,7 @@ namespace sit {
       std::mt19937 mt(rd());
       std::uniform_int_distribution<> uid(0, branching_literals.size() - 1);
       literal* branching_literal = branching_literals[uid(mt)];
-      *branching_literal->data() = !branching_literal->is_complemented();
+      branching_literal->data() = !branching_literal->is_complemented();
       return branching_literal;
     }
 
@@ -74,8 +74,8 @@ namespace sit {
               return 0;
             case clause_state::unit:
               for (literal& j : _formula.clauses()[i].literals()) {
-                if (!j.data()->is_assigned()) {
-                  *j.data() = !j.is_complemented();
+                if (!j.data().is_assigned()) {
+                  j.data() = !j.is_complemented();
                   _implication_graph.push_back({&j, 1, i, _decision_level});
                 }
               }
@@ -94,7 +94,7 @@ namespace sit {
 
     node* find_node(const literal& l) noexcept {
       for (node& i : _implication_graph) {
-        if (l.data() == i.lit->data()) {
+        if (&l.data() == &i.lit->data()) {
           return &i;
         }
       }
@@ -105,12 +105,12 @@ namespace sit {
       clause ret;
       literal* remove = lhs.lit;
       for (const literal& i : _formula.clauses()[lhs.ant].literals()) {
-        if (i.data() != remove->data()) {
+        if (&i.data() != &remove->data()) {
           ret.literals().push_back(i);
         }
       }
       for (const literal& i : rhs.literals()) {
-        if (i.data() != remove->data()) {
+        if (&i.data() != &remove->data()) {
           ret.literals().push_back(i);
         }
       }
@@ -162,7 +162,7 @@ namespace sit {
         }
       }
       for (std::size_t i = new_size; i < _implication_graph.size(); ++i) {
-        _implication_graph[i].lit->data()->unassign();
+        _implication_graph[i].lit->data().unassign();
       }
       _implication_graph.resize(new_size);
     }

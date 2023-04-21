@@ -6,38 +6,17 @@
 namespace sit {
   class literal {
   public:
-    literal(variable& x, const bool is_complemented = 0) noexcept : _variable(&x), _is_complemented(is_complemented) {}
-
-    literal(const literal& other) noexcept  : _variable(other._variable), _is_complemented(other._is_complemented) {}
-
-    literal(literal&& other) noexcept  : _variable(other._variable), _is_complemented(other._is_complemented) {
-      other._is_complemented = 0;
-      other._variable = nullptr;
-    }
-
-    literal operator=(const literal& rhs) noexcept {
-      _is_complemented = rhs._is_complemented;
-      _variable = rhs._variable;
-      return *this;
-    }
-
-    literal operator=(literal&& rhs) noexcept {
-      _is_complemented = rhs._is_complemented;
-      _variable = rhs._variable;
-      rhs._is_complemented = 0;
-      rhs._variable = nullptr;
-      return *this;
-    }
+    literal(variable& x, const bool is_complemented = 0) noexcept : _variable(x), _is_complemented(is_complemented) {}
 
     operator bool() const {
-      return _is_complemented != *_variable;
+      return _is_complemented != _variable;
     }
 
-    const variable* data() const noexcept {
+    const variable& data() const noexcept {
       return _variable;
     }
 
-    variable* data() noexcept {
+    variable& data() noexcept {
       return _variable;
     }
 
@@ -49,7 +28,7 @@ namespace sit {
       return _is_complemented;
     }
   private:
-    variable* _variable;
+    variable& _variable;
     bool _is_complemented;
   };
 }

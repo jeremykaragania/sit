@@ -19,7 +19,7 @@ namespace sit {
       std::size_t assigned_1 = 0;
       std::size_t unassigned = 0;
       for (const literal& i : _literals) {
-        if (i.data()->is_assigned()) {
+        if (i.data().is_assigned()) {
           if (i) {
             ++assigned_1;
           }
@@ -67,7 +67,7 @@ namespace sit {
       for (literal& i : _literals) {
         bool include = 1;
         for (literal& j : simplified) {
-          if (i.data() == j.data()) {
+          if (&i.data() == &j.data()) {
             include = 0;
             break;
           }
