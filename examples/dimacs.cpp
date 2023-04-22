@@ -2,17 +2,23 @@
 #include <sit.h>
 
 int main() {
+  // We declare our set of variables.
+  std::vector<sit::variable> x;
+
+  // We declare our formula.
+  sit::formula f;
+
   // We load our DIMACS file.
-  sit::dimacs d("filename");
+  sit::read_dimacs("filename", f, x);
 
   // We use a CDCL SAT solver and provide the formula and the related set of variables.
-  sit::cdcl c(d.data(), d.variables());
+  sit::cdcl c(f, x);
 
   // SAT.
   if (c.solve()) {
     std::cout << "SAT\n";
-    for (std::size_t i = 0; i < d.variables().size(); ++i) {
-      std::cout << "X[" << i << "] = " << d.variables()[i] << std::endl;
+    for (std::size_t i = 0; i < x.size(); ++i) {
+      std::cout << "X[" << i << "] = " << x[i] << std::endl;
     }
   }
   // UNSAT.
