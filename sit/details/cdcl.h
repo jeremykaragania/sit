@@ -167,7 +167,7 @@ namespace sit {
     }
 
     formula& _formula;
-    std::vector<variable>& _variables;
+    const std::vector<variable>& _variables;
     std::vector<node> _implication_graph;
     std::size_t _decision_level;
   };
