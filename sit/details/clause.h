@@ -43,9 +43,6 @@ namespace sit {
     }
 
     operator bool() const {
-      if (state() == clause_state::unresolved) {
-        throw;
-      }
       for (const literal& i : _literals) {
         if (i) {
           return 1;
