@@ -92,13 +92,13 @@ namespace sit {
       return 1;
     }
 
-    node* find_node(const literal& l) noexcept {
+    node* find_node(const literal& l) {
       for (node& i : _implication_graph) {
         if (&l.data() == &i.lit->data()) {
           return &i;
         }
       }
-      return nullptr;
+      throw;
     }
 
     clause resolve(const node& lhs, const clause& rhs) const noexcept {
@@ -126,7 +126,7 @@ namespace sit {
         node* premise;
         for (const literal& i : learned.literals()) {
           node* n = find_node(i);
-          if (n!= nullptr && n->dl == _decision_level) {
+          if (n->dl == _decision_level) {
             ++lits_in_decision_level;
             if (n->has_ant) {
               premise = n;
