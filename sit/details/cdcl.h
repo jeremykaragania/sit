@@ -32,10 +32,10 @@ namespace sit {
     }
   private:
     struct node { 
-      literal* lit;
-      bool has_ant;
-      std::size_t ant;
-      std::size_t dl;
+      literal* lit = nullptr;
+      bool has_ant = 0;
+      std::size_t ant = 0;
+      std::size_t dl = 0;
     };
 
     bool all_variables_assigned() const noexcept {
@@ -123,7 +123,7 @@ namespace sit {
       learned = learned.simplify();
       while (1) {
         std::size_t lits_in_decision_level = 0;
-        node* premise;
+        node* premise = nullptr;
         for (const literal& i : learned.literals()) {
           node* n = find_node(i);
           if (n->dl == _decision_level) {
