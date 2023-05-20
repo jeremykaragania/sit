@@ -8,7 +8,7 @@
 namespace sit {
   class cdcl : public sat_solver {
   public:
-    cdcl(formula& form, std::vector<variable>& vars) noexcept : _formula(form), _variables(vars) {}
+    cdcl(formula& form, const std::vector<variable>& vars) noexcept : _formula(form), _variables(vars) {}
 
     bool solve() override {
       _decision_level = 0;
