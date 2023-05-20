@@ -25,6 +25,7 @@ namespace sit {
             return 1;
           }
           ++_decision_level;
+          ++_variables_assigned;
           literal* branch = pick_branching_literal();
           _implication_graph.push_back({branch, 0, 0, _decision_level});
         }
@@ -39,12 +40,7 @@ namespace sit {
     };
 
     bool all_variables_assigned() const noexcept {
-      for (const variable& i : _variables) {
-        if (!i.is_assigned()) {
-          return 0;
-        }
-      }
-      return 1;
+      return _variables_assigned == _variables.size();
     }
 
     literal* pick_branching_literal() const noexcept {
@@ -76,6 +72,7 @@ namespace sit {
               for (literal& j : _formula.clauses()[i].literals()) {
                 if (!j.data().is_assigned()) {
                   j.data() = !j.is_complemented();
+                  ++_variables_assigned;
                   _implication_graph.push_back({&j, 1, i, _decision_level});
                 }
               }
@@ -162,6 +159,7 @@ namespace sit {
       }
       for (std::size_t i = new_size; i < _implication_graph.size(); ++i) {
         _implication_graph[i].lit->data().unassign();
+        --_variables_assigned;
       }
       _implication_graph.resize(new_size);
     }
@@ -170,6 +168,7 @@ namespace sit {
     const std::vector<variable>& _variables;
     std::vector<node> _implication_graph;
     std::size_t _decision_level;
+    std::size_t _variables_assigned;
   };
 }
 
