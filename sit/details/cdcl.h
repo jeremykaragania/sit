@@ -33,10 +33,10 @@ namespace sit {
     }
   private:
     struct node { 
-      literal* lit = nullptr;
-      bool has_ant = 0;
-      std::size_t ant = 0;
-      std::size_t dl = 0;
+      literal* value = nullptr;
+      bool has_antecedent = 0;
+      std::size_t antecedent = 0;
+      std::size_t decision_level = 0;
     };
 
     bool all_variables_assigned() const noexcept {
@@ -91,7 +91,7 @@ namespace sit {
 
     node* find_node(const literal& l) {
       for (node& i : _implication_graph) {
-        if (&l.data() == &i.lit->data()) {
+        if (&l.data() == &i.value->data()) {
           return &i;
         }
       }
@@ -100,13 +100,13 @@ namespace sit {
 
     clause resolve(const node& lhs, const clause& rhs) const noexcept {
       clause ret;
-      for (const literal& i : _formula.clauses()[lhs.ant].literals()) {
-        if (&i.data() != &lhs.lit->data()) {
+      for (const literal& i : _formula.clauses()[lhs.antecedent].literals()) {
+        if (&i.data() != &lhs.value->data()) {
           ret.literals().push_back(i);
         }
       }
       for (const literal& i : rhs.literals()) {
-        if (&i.data() != &lhs.lit->data()) {
+        if (&i.data() != &lhs.value->data()) {
           ret.literals().push_back(i);
         }
       }
@@ -115,22 +115,22 @@ namespace sit {
     }
 
     std::size_t conflict_analysis() noexcept {
-      clause learned = _formula.clauses()[_implication_graph.back().ant];
+      clause learned = _formula.clauses()[_implication_graph.back().antecedent];
       _implication_graph.pop_back();
       learned = learned.simplify();
       while (1) {
-        std::size_t lits_in_decision_level = 0;
+        std::size_t literal_count = 0;
         node* premise = nullptr;
         for (const literal& i : learned.literals()) {
           node* n = find_node(i);
-          if (n->dl == _decision_level) {
-            ++lits_in_decision_level;
-            if (n->has_ant) {
+          if (n->decision_level == _decision_level) {
+            ++literal_count;
+            if (n->has_antecedent) {
               premise = n;
             }
           }
         }
-        if (lits_in_decision_level == 1) {
+        if (literal_count == 1) {
           break;
         }
         learned = resolve(*premise, learned);
@@ -140,9 +140,9 @@ namespace sit {
       if (learned.literals().size() > 0) {
         std::size_t first = _decision_level;
         for (const literal& i : learned.literals()) {
-          std::size_t dl = find_node(i)->dl;
-          if (dl < first && dl > ret) {
-            ret = dl;
+          std::size_t decision_level = find_node(i)->decision_level;
+          if (decision_level < first && decision_level > ret) {
+            ret = decision_level;
           }
         }
       }
@@ -152,13 +152,13 @@ namespace sit {
     void backtrack(const std::size_t b) noexcept {
       std::size_t new_size = 0;
       for (std::size_t i = 0; i < _implication_graph.size(); ++i) {
-        if (_implication_graph[i].dl > b) {
+        if (_implication_graph[i].decision_level > b) {
           new_size = i;
           break;
         }
       }
       for (std::size_t i = new_size; i < _implication_graph.size(); ++i) {
-        _implication_graph[i].lit->data().unassign();
+        _implication_graph[i].value->data().unassign();
         --_variables_assigned;
       }
       _implication_graph.resize(new_size);
