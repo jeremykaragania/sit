@@ -44,9 +44,9 @@ namespace sit {
 
     literal* pick_branching_literal() const noexcept {
       std::vector<literal*> branching_literals;
-      for (clause& i : _formula.clauses()) {
-        for (literal& j : i.literals()) {
-          if (!j.data().is_assigned()) {
+      for (clause& i : _formula.clauses) {
+        for (literal& j : i.literals) {
+          if (!j.data.is_assigned()) {
             branching_literals.push_back(&j);
           }
         }
@@ -55,22 +55,22 @@ namespace sit {
       std::mt19937 mt(rd());
       std::uniform_int_distribution<> uid(0, branching_literals.size() - 1);
       literal* branching_literal = branching_literals[uid(mt)];
-      branching_literal->data() = !branching_literal->is_complemented();
+      branching_literal->data = !branching_literal->is_complemented;
       return branching_literal;
     }
 
     bool unit_propagation() noexcept {
       while (1) {
         bool is_unit = 0;
-        for (std::size_t i = 0; i < _formula.clauses().size(); ++i) {
-          switch(_formula.clauses()[i].state()) {
+        for (std::size_t i = 0; i < _formula.clauses.size(); ++i) {
+          switch(_formula.clauses[i].state()) {
             case clause_state::unsatisfied:
               _implication_graph.push_back({nullptr, 1, i, _decision_level});
               return 0;
             case clause_state::unit:
-              for (literal& j : _formula.clauses()[i].literals()) {
-                if (!j.data().is_assigned()) {
-                  j.data() = !j.is_complemented();
+              for (literal& j : _formula.clauses[i].literals) {
+                if (!j.data.is_assigned()) {
+                  j.data = !j.is_complemented;
                   ++_variables_assigned;
                   _implication_graph.push_back({&j, 1, i, _decision_level});
                 }
@@ -90,7 +90,7 @@ namespace sit {
 
     node* find_node(const literal& l) {
       for (node& i : _implication_graph) {
-        if (&l.data() == &i.value->data()) {
+        if (&l.data == &i.value->data) {
           return &i;
         }
       }
@@ -99,14 +99,14 @@ namespace sit {
 
     clause resolve(const node& lhs, const clause& rhs) const noexcept {
       clause ret;
-      for (const literal& i : _formula.clauses()[lhs.antecedent].literals()) {
-        if (&i.data() != &lhs.value->data()) {
-          ret.literals().push_back(i);
+      for (const literal& i : _formula.clauses[lhs.antecedent].literals) {
+        if (&i.data != &lhs.value->data) {
+          ret.literals.push_back(i);
         }
       }
-      for (const literal& i : rhs.literals()) {
-        if (&i.data() != &lhs.value->data()) {
-          ret.literals().push_back(i);
+      for (const literal& i : rhs.literals) {
+        if (&i.data != &lhs.value->data) {
+          ret.literals.push_back(i);
         }
       }
       ret = ret.simplify();
@@ -114,13 +114,13 @@ namespace sit {
     }
 
     std::size_t conflict_analysis() noexcept {
-      clause learned = _formula.clauses()[_implication_graph.back().antecedent];
+      clause learned = _formula.clauses[_implication_graph.back().antecedent];
       _implication_graph.pop_back();
       learned = learned.simplify();
       while (1) {
         std::size_t literal_count = 0;
         node* premise = nullptr;
-        for (const literal& i : learned.literals()) {
+        for (const literal& i : learned.literals) {
           node* n = find_node(i);
           if (n->decision_level == _decision_level) {
             ++literal_count;
@@ -134,11 +134,11 @@ namespace sit {
         }
         learned = resolve(*premise, learned);
       }
-      _formula.clauses().push_back(learned);
+      _formula.clauses.push_back(learned);
       std::size_t ret = 0;
-      if (learned.literals().size() > 0) {
+      if (learned.literals.size() > 0) {
         std::size_t first = _decision_level;
-        for (const literal& i : learned.literals()) {
+        for (const literal& i : learned.literals) {
           std::size_t decision_level = find_node(i)->decision_level;
           if (decision_level < first && decision_level > ret) {
             ret = decision_level;
@@ -157,7 +157,7 @@ namespace sit {
         }
       }
       for (std::size_t i = new_size; i < _implication_graph.size(); ++i) {
-        _implication_graph[i].value->data().unassign();
+        _implication_graph[i].value->data.unassign();
         --_variables_assigned;
       }
       _implication_graph.resize(new_size);

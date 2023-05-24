@@ -29,8 +29,8 @@ namespace sit {
     init_variables.resize(variable_number);
     ifs >> buffer;
     std::size_t clause_number = std::stoull(buffer);
-    init_formula.clauses().resize(clause_number);
-    for (clause& i : init_formula.clauses()) {
+    init_formula.clauses.resize(clause_number);
+    for (clause& i : init_formula.clauses) {
       while (1) {
         ifs >> buffer;
         if (buffer == "0" || ifs.eof()) {
@@ -41,7 +41,7 @@ namespace sit {
           complemented = 1;
           buffer.erase(buffer.begin());
         }
-        i.literals().push_back({init_variables[std::stoull(buffer) - 1], complemented});
+        i.literals.push_back({init_variables[std::stoull(buffer) - 1], complemented});
       }
     }
   }

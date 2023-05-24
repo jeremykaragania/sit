@@ -4,16 +4,15 @@
 #include <details/clause.h>
 
 namespace sit {
-  class formula {
-  public:
+  struct formula {
     formula() noexcept {}
 
-    formula(const std::vector<clause> clauses) noexcept : _clauses(clauses) {}
+    formula(const std::vector<clause> init) noexcept : clauses(init) {}
 
-    formula(const std::initializer_list<clause> clauses) noexcept : _clauses(clauses) {}
+    formula(const std::initializer_list<clause> init) noexcept : clauses(init) {}
 
     operator bool() {
-      for (const clause& i : _clauses) {
+      for (const clause& i : clauses) {
         if (!i) {
           return 0;
         }
@@ -21,15 +20,7 @@ namespace sit {
       return 1;
     }
 
-    const std::vector<clause>& clauses() const noexcept {
-      return _clauses;
-    }
-
-    std::vector<clause>& clauses() noexcept {
-      return _clauses;
-    }
-  private:
-    std::vector<clause> _clauses;
+    std::vector<clause> clauses;
   };
 };
 

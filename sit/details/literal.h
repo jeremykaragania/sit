@@ -4,32 +4,15 @@
 #include <details/variable.h>
 
 namespace sit {
-  class literal {
-  public:
-    literal(variable& x, const bool is_complemented = 0) noexcept : _variable(x), _is_complemented(is_complemented) {}
+  struct literal {
+    literal(variable& init, const bool is_compl = 0) noexcept : data(init), is_complemented(is_compl) {}
 
     operator bool() const {
-      return _is_complemented != _variable;
+      return is_complemented != data;
     }
 
-    const variable& data() const noexcept {
-      return _variable;
-    }
-
-    variable& data() noexcept {
-      return _variable;
-    }
-
-    const bool& is_complemented() const noexcept {
-      return _is_complemented;
-    }
-
-    bool& is_complemented() noexcept {
-      return _is_complemented;
-    }
-  private:
-    variable& _variable;
-    bool _is_complemented;
+    variable& data;
+    bool is_complemented;
   };
 }
 

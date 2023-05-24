@@ -4,29 +4,28 @@
 namespace sit {
   class variable {
   public:
-    variable() noexcept : _data{0, 0} {}
+    variable() noexcept : value(0), _is_assigned(0) {}
 
-    variable(const bool value) noexcept : _data{1, value} {}
+    variable(const bool value) noexcept : value(value), _is_assigned(1) {}
 
     bool is_assigned() const noexcept {
-      return _data.is_assigned;
+      return _is_assigned;
     }
 
     void unassign() noexcept {
-      _data.is_assigned = 0;
+      _is_assigned = 0;
     }
 
     operator bool() const {
-      if (!_data.is_assigned) {
+      if (!_is_assigned) {
         throw;
       }
-      return _data.value;
+      return value;
     }
+
+    bool value;
   private:
-    struct {
-      bool is_assigned : 1;
-      bool value : 1;
-    } _data;
+    bool _is_assigned;
   };
 }
 
