@@ -8,10 +8,9 @@
 namespace sit {
   class cdcl : public sat_solver {
   public:
-    cdcl(formula& form, const std::vector<variable>& vars) noexcept : _formula(form), _variables(vars) {}
+    cdcl(formula& form, const std::vector<variable>& vars) noexcept : _formula(form), _variables(vars), _decision_level(0), _variables_assigned(0) {}
 
     bool solve() override {
-      _decision_level = 0;
       while (1) {
         if (!unit_propagation()) {
           if (_decision_level == 0) {
