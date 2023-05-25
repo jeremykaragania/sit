@@ -5,12 +5,6 @@
 
 namespace sit {
   struct formula {
-    formula() noexcept {}
-
-    formula(const std::vector<clause> init) noexcept : clauses(init) {}
-
-    formula(const std::initializer_list<clause> init) noexcept : clauses(init) {}
-
     operator bool() {
       for (const clause& i : clauses) {
         if (!i) {
