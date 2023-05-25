@@ -66,6 +66,7 @@ namespace sit {
       }
       return simplified;
     }
+
     std::vector<literal> literals;
   };
 }
