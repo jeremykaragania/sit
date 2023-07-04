@@ -1,5 +1,5 @@
 # Sit
-A toy header-only SAT solver library.
+A header-only SAT solver library.
 
 ## Installation
 Clone the repository.
