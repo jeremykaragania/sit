@@ -7,7 +7,8 @@
 #include <details/formula.h>
 
 namespace sit {
-  void read_dimacs(std::string filename, formula& init_formula, std::vector<variable>& init_variables) {
+  template <typename T>
+  void read_dimacs(std::string filename, formula<T>& init_formula, std::vector<variable>& init_variables) {
     std::ifstream ifs(filename, std::ios::in);
     if (!ifs.is_open()) {
       throw;
@@ -21,7 +22,8 @@ namespace sit {
     ifs.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
     std::string buffer;
     ifs >> buffer;
-    if (buffer != "cnf") {
+    T nf;
+    if (buffer != nf.name()) {
       throw;
     }
     ifs >> buffer;
@@ -30,7 +32,7 @@ namespace sit {
     ifs >> buffer;
     std::size_t clause_number = std::stoull(buffer);
     init_formula.clauses.resize(clause_number);
-    for (clause& i : init_formula.clauses) {
+    for (clause<T>& i : init_formula.clauses) {
       while (1) {
         ifs >> buffer;
         if (buffer == "0" || ifs.eof()) {

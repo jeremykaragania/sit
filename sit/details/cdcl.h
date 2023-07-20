@@ -8,7 +8,7 @@
 namespace sit {
   class cdcl : public sat_solver {
   public:
-    cdcl(formula& form, const std::vector<variable>& vars) noexcept : _formula(form), _variables(vars), _decision_level(0), _variables_assigned(0) {}
+    cdcl(formula<cnf>& form, const std::vector<variable>& vars) noexcept : _formula(form), _variables(vars), _decision_level(0), _variables_assigned(0) {}
 
     bool solve() override {
       while (1) {
@@ -44,7 +44,7 @@ namespace sit {
 
     literal* pick_branching_literal() const noexcept {
       std::vector<literal*> branching_literals;
-      for (clause& i : _formula.clauses) {
+      for (clause<cnf>& i : _formula.clauses) {
         for (literal& j : i.literals) {
           if (!j.data.is_assigned()) {
             branching_literals.push_back(&j);
@@ -97,8 +97,8 @@ namespace sit {
       throw;
     }
 
-    clause resolve(const node& lhs, const clause& rhs) const noexcept {
-      clause ret;
+    clause<cnf> resolve(const node& lhs, const clause<cnf>& rhs) const noexcept {
+      clause<cnf> ret;
       for (const literal& i : _formula.clauses[lhs.antecedent].literals) {
         if (&i.data != &lhs.value->data) {
           ret.literals.push_back(i);
@@ -114,7 +114,7 @@ namespace sit {
     }
 
     std::size_t conflict_analysis() noexcept {
-      clause learned = _formula.clauses[_implication_graph.back().antecedent];
+      clause<cnf> learned = _formula.clauses[_implication_graph.back().antecedent];
       _implication_graph.pop_back();
       learned = learned.simplify();
       while (1) {
@@ -163,7 +163,7 @@ namespace sit {
       _implication_graph.resize(new_size);
     }
 
-    formula& _formula;
+    formula<cnf>& _formula;
     const std::vector<variable>& _variables;
     std::vector<node> _implication_graph;
     std::size_t _decision_level;

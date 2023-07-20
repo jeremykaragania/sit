@@ -3,6 +3,7 @@
 
 #include <details/variable.h>
 #include <details/literal.h>
+#include <details/normal_forms.h>
 #include <details/clause.h>
 #include <details/formula.h>
 #include <details/sat_solver.h>

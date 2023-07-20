@@ -7,7 +7,9 @@
 namespace sit {
   enum class clause_state {unsatisfied, satisfied, unit, unresolved};
 
-  struct clause {
+  template <typename T>
+  class clause {
+  public:
     clause() noexcept : literals() {}
 
     clause(const std::vector<literal> init) noexcept : literals(init) {}
@@ -43,7 +45,7 @@ namespace sit {
 
     operator bool() const {
       for (const literal& i : literals) {
-        if (i) {
+        if (nf.clause_cond(i)) {
           return 1;
         }
       }
@@ -68,6 +70,8 @@ namespace sit {
     }
 
     std::vector<literal> literals;
+  private:
+    T nf;
   };
 }
 
