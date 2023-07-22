@@ -6,7 +6,7 @@ int main() {
   std::vector<sit::variable> x;
 
   // We declare our formula.
-  sit::formula f;
+  sit::formula<sit::cnf> f;
 
   // We load our DIMACS file.
   sit::read_dimacs("filename", f, x);
