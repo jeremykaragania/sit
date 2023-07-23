@@ -6,7 +6,7 @@ int main() {
   std::vector<sit::variable> x(12);
 
   // We declare our set of clauses.
-  std::vector<sit::clause> w(11);
+  std::vector<sit::clause<sit::cnf>> w(11);
 
   // We define our set of clauses.
   w[0] = {{x[0], 1}, {x[1], 1}}; // ¬x₁ ∨ ¬x₂.
@@ -22,7 +22,7 @@ int main() {
   w[10] = {{x[10], 1}, x[11]}; // ¬x₁₁ ∨ x₁₂.
 
   // We define our formula.
-  sit::formula f(w);
+  sit::formula<sit::cnf> f(w);
 
   // We use a CDCL SAT solver and provide the formula and the related set of variables.
   sit::cdcl c(f, x);

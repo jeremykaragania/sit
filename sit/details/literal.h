@@ -5,6 +5,8 @@
 
 namespace sit {
   struct literal {
+    literal(variable& data_init, const bool is_complemented_init = 0) : data(data_init), is_complemented(is_complemented_init) {}
+
     operator bool() const {
       return is_complemented != data;
     }
