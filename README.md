@@ -14,36 +14,37 @@ Include the source file [sit.h](sit/sit.h).
 ## Usage
 A `variable` has a `bool` value.
 ```cpp
-sit::variable x; // Unassigned.
-// ...
-sit::variable x = 1; // Assigned.
+sit::variable a; // Unassigned.
+sit::variable b = 1; // Assigned.
 ```
 A `literal` encapsulates a `variable` reference.
 ```cpp
-sit::variable x;
+sit::variable a;
 // ...
-sit::literal l = x; // Uncomplemented.
-// ...
-sit::literal l = {x, 1} // Complemented.
+sit::literal b = a; // Uncomplemented.
+sit::literal b = {a, 1} // Complemented.
 ```
-A `clause` is a `literal` collection with `or` operators between each element.
+A `clause` is a `literal` collection with `or` or `and` operators between each element.
 ```cpp
-std::vector<variable> x(3);
+std::vector<variable> a(3);
 // ...
-sit::clause w = {{x[0], 1}, x[1], x[2]}; // ¬x₁ ∨ x₂ ∨ x₃.
+sit::clause<sit::cnf> b = {{a[0], 1}, a[1], a[2]}; // ¬a₁ ∨ a₂ ∨ a₃.
+sit::clause<sit::dnf> c = {{a[0], 1}, a[1], a[2]}; // ¬a₁ ∧ a₂ ∧ a₃.
 ```
-A `formula` is a `clause` collection with `and` operators between each element.
+A `formula` is a `clause` collection with `or` or `and` operators between each element.
 ```cpp
-std::vector<clause> w(3);
+std::vector<clause<sit::cnf>> a(3);
+std::vector<clause<sit::dnf>> b(3);
 // ...
-sit::formula formula = {w[0], w[1], w[2]}; // w₁ ∧ w₂ ∧ w₃.
+sit::formula<sit::cnf> c = {a[0], a[1], a[2]}; // a₁ ∧ a₂ ∧ a₃.
+sit::formula<sit::dnf> d = {b[0], b[1], b[2]}; // b₁ ∨ b₂ ∨ b₃.
 ```
 A `sat_solver` normally requires a `formula` and a related `variable` collection.
 ```cpp
-std::vector<variable> x;
-sit::formula f;
+std::vector<variable> a;
+sit::formula<sit::cnf> b;
 // ...
-sit::cdcl c(f, x);
+sit::cdcl c(b, a);
 bool satisfiable = c.solve();
 ```
 
