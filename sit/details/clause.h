@@ -7,6 +7,7 @@
 namespace sit {
   enum class clause_state {unsatisfied, satisfied, unit, unresolved};
 
+  // A clause is a formula collection with OR or AND operators between each element.
   template <typename T>
   class clause {
   public:

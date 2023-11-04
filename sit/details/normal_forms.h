@@ -4,6 +4,7 @@
 #include <string>
 
 namespace sit {
+  // A conjunctive normal form formula is an AND of ORs.
   struct cnf {
     bool clause_cond(const bool& x) const noexcept {
       return x;
@@ -18,6 +19,7 @@ namespace sit {
     }
   };
 
+  // A disjunctive normal form formula is an OR of ANDs.
   struct dnf {
     bool clause_cond(const bool& x) const noexcept {
       return !x;

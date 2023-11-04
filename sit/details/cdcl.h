@@ -6,6 +6,7 @@
 #include <details/sat_solver.h>
 
 namespace sit {
+  // Conflict-driven clause learning is driven by conflict to learn new clauses to iteratively reduce the size of the search space.
   class cdcl : public sat_solver {
   public:
     cdcl(formula<cnf>& form, const std::vector<variable>& vars) noexcept : _formula(form), _variables(vars), _decision_level(0), _variables_assigned(0) {}
@@ -31,6 +32,7 @@ namespace sit {
       }
     }
   private:
+    // A node tracks the cause of assignments in the implication graph.
     struct node { 
       literal* value = nullptr;
       bool has_antecedent = 0;

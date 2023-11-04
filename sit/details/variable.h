@@ -2,6 +2,7 @@
 #define VARIABLE_H
 
 namespace sit {
+  // A variable has a bool value and can be unassigned or assigned.
   class variable {
   public:
     variable() noexcept : value(0), _is_assigned(0) {}
