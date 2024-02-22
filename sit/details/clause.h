@@ -11,7 +11,7 @@ namespace sit {
   template <typename T>
   class clause {
   public:
-    clause() noexcept : literals() {}
+    clause() noexcept = default;
 
     clause(const std::vector<literal> init) noexcept : literals(init) {}
 

@@ -9,6 +9,8 @@ namespace sit {
   template <typename T>
   class formula {
   public:
+    formula() noexcept = default;
+
     formula(const std::vector<clause<T>> clauses_init) noexcept : clauses(clauses_init) {}
 
     formula(const std::initializer_list<clause<T>> clauses_init) noexcept : clauses(clauses_init) {}
