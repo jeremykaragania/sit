@@ -121,7 +121,7 @@ namespace sit {
     }
 
     /*
-      cdcl::find_node searches for a literal "l" in the implication graph with a common
+      cdcl::find_node searches for a literal "l" in the implication graph with a common underlying variable.
     */
     node* find_node(const literal& l) {
       for (node& i : _implication_graph) {
@@ -197,7 +197,8 @@ namespace sit {
     }
 
     /*
-      cdcl::backtrack is called after conflict analysis. It simply backtracks to the decision level "b" which
+      cdcl::backtrack is called after conflict analysis. It simply backtracks to the decision level "b" which is returned from
+      cdcl::conflict_analysis.
     */
     void backtrack(const std::size_t b) noexcept {
       std::size_t new_size = 0;
