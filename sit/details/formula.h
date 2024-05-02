@@ -5,7 +5,10 @@
 #include <details/clause.h>
 
 namespace sit {
-  // A formula is a clause collection with OR or AND operators between each element
+  /*
+    A formula is a clause collection with OR or AND operators between each
+    element
+  */
   template <typename T>
   class formula {
   public:

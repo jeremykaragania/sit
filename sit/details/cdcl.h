@@ -7,19 +7,21 @@
 
 namespace sit {
   /*
-    Conflict-driven clause learning is driven by conflict to learn new clauses to iteratively reduce the size of the search
-    space.
+    Conflict-driven clause learning is driven by conflict to learn new clauses
+    to iteratively reduce the size of the search space.
   */
   class cdcl : public sat_solver {
   public:
     /*
-      cdcl::cdcl constructs a sit::cdcl from a sit::formula "form" and a std::vector of sit::variable "vars". "form" provides
-      the constraint and "vars" provides the search space.
+      cdcl::cdcl constructs a sit::cdcl from a sit::formula "form" and a
+      std::vector of sit::variable "vars". "form" provides the constraint and
+      "vars" provides the search space.
     */
     cdcl(formula<cnf>& form, const std::vector<variable>& vars) noexcept : _formula(form), _variables(vars), _decision_level(0), _variables_assigned(0) {}
 
     /*
-      cdcl::solve returns the satisfiability of a sit::formula using conflict-driven clause learning.
+      cdcl::solve returns the satisfiability of a sit::formula using
+      conflict-driven clause learning.
     */
     bool solve() override {
       while (1) {
@@ -31,8 +33,8 @@ namespace sit {
           backtrack(_decision_level);
         }
         /*
-          Unit propagation will not always yield new assignments, therefore, we must resort to manually assigning literals with
-          unassigned variables.
+          Unit propagation will not always yield new assignments, therefore, we
+          must resort to manually assigning literals with unassigned variables.
         */
         else {
           if (all_variables_assigned()) {
@@ -47,9 +49,11 @@ namespace sit {
     }
   private:
     /*
-      cdcl::node tracks the cause of assignments in the implication graph. If we look at a node, we can say its literal is
-      true because of its antecedents, or its antecedents imply its literal's truth value. We can't keep a pointer to the
-      antecedent as you can't rely on using pointers to items in an std::vector, they keep changing.
+      cdcl::node tracks the cause of assignments in the implication graph. If
+      we look at a node, we can say its literal is true because of its
+      antecedents, or its antecedents imply its literal's truth value. We can't
+      keep a pointer to the antecedent as you can't rely on using pointers to
+      items in an std::vector, they keep changing.
     */
     struct node {
       literal* value = nullptr;
@@ -63,9 +67,11 @@ namespace sit {
     }
 
     /*
-      cdcl::pick_branching_literal picks a random literal from a pool of unassigned literals and returns a pointer to it. It
-      randomly picks a literal with an unassigned variable, and assigns its variable a value so that the literal evaluates to
-      true. After this assignment, we always perform unit propagation.
+      cdcl::pick_branching_literal picks a random literal from a pool of
+      unassigned literals and returns a pointer to it. It randomly picks a
+      literal with an unassigned variable, and assigns its variable a value so
+      that the literal evaluates to true. After this assignment, we always
+      perform unit propagation.
     */
     literal* pick_branching_literal() const noexcept {
       std::vector<literal*> branching_literals;
@@ -85,11 +91,14 @@ namespace sit {
     }
 
     /*
-      cdcl::unit_propagation analyses each clause in the formula, hoping it can automatically deduce any variable assignments.
-      A clause has the state clause_state::unit if all but one literal in it evaluates to false and that one literal has an
-      unassigned variable. Therefore, that one literal must be true in order for the clause to be true, so unit propagation
-      deduces its truth value. But it can't just stop there, it must see if this new assignment has made any other clauses unit
-      and continue this until there are no more unit clauses.
+      cdcl::unit_propagation analyses each clause in the formula, hoping it can
+      automatically deduce any variable assignments. A clause has the state
+      clause_state::unit if all but one literal in it evaluates to false and
+      that one literal has an unassigned variable. Therefore, that one literal
+      must be true in order for the clause to be true, so unit propagation
+      deduces its truth value. But it can't just stop there, it must see if
+      this new assignment has made any other clauses unit and continue this
+      until there are no more unit clauses.
     */
     bool unit_propagation() noexcept {
       while (1) {
@@ -121,7 +130,8 @@ namespace sit {
     }
 
     /*
-      cdcl::find_node searches for a literal "l" in the implication graph with a common underlying variable.
+      cdcl::find_node searches for a literal "l" in the implication graph with
+      a common underlying variable.
     */
     node* find_node(const literal& l) {
       for (node& i : _implication_graph) {
@@ -133,10 +143,13 @@ namespace sit {
     }
 
     /*
-      cdcl::conflict_analysis analyses conflict within the implication graph. Conflicts occur as a result of unit propagation
-      when variables have been assigned, such that one or more clauses evaluates to false. This is always discovered through
-      contradictions of assignments in unit propagation. At a high level it is caused by assigning a variable to be true in one
-      clause, but in another clause it has to be false. Unit propagation has good intentions, it just does not know the future
+      cdcl::conflict_analysis analyses conflict within the implication graph.
+      Conflicts occur as a result of unit propagation when variables have been
+      assigned, such that one or more clauses evaluates to false. This is
+      always discovered through contradictions of assignments in unit
+      propagation. At a high level it is caused by assigning a variable to be
+      true in one clause, but in another clause it has to be false. Unit
+      propagation has good intentions, it just does not know the future
       consequences of its actions.
     */
     std::size_t conflict_analysis() noexcept {
@@ -175,9 +188,11 @@ namespace sit {
     }
 
     /*
-      cdcl::resolve resolves two clauses "lhs" and "rhs". The resolution operator is defined if both clauses have a common
-      literal, however in one clause, the literal is complemented and in the other the literal is uncomplemented. The
-      resolution operator then returns a new clause, which is a combination of the two clauses with the exception of the common
+      cdcl::resolve resolves two clauses "lhs" and "rhs". The resolution
+      operator is defined if both clauses have a common literal, however in one
+      clause, the literal is complemented and in the other the literal is
+      uncomplemented. The resolution operator then returns a new clause, which
+      is a combination of the two clauses with the exception of the common
       literals.
     */
     clause<cnf> resolve(const node& lhs, const clause<cnf>& rhs) const noexcept {
@@ -197,8 +212,8 @@ namespace sit {
     }
 
     /*
-      cdcl::backtrack is called after conflict analysis. It simply backtracks to the decision level "b" which is returned from
-      cdcl::conflict_analysis.
+      cdcl::backtrack is called after conflict analysis. It simply backtracks
+      to the decision level "b" which is returned from cdcl::conflict_analysis.
     */
     void backtrack(const std::size_t b) noexcept {
       std::size_t new_size = 0;

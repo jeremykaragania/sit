@@ -11,7 +11,10 @@ int main() {
   // We load our DIMACS file.
   sit::read_dimacs("filename", f, x);
 
-  // We use a CDCL SAT solver and provide the formula and the related set of variables.
+  /*
+    We use a CDCL SAT solver and provide the formula and the related set of
+    variables.
+  */
   sit::cdcl c(f, x);
 
   // SAT.

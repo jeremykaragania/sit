@@ -7,7 +7,10 @@
 namespace sit {
   enum class clause_state {unsatisfied, satisfied, unit, unresolved};
 
-  // A clause is a formula collection with OR or AND operators between each element.
+  /*
+    A clause is a formula collection with OR or AND operators between each
+    element.
+  */
   template <typename T>
   class clause {
   public:
@@ -53,6 +56,11 @@ namespace sit {
       return 0;
     }
 
+    /*
+      clause::simplify creates a new simplified from clause from this clause by
+      removing duplicate literals. In CNF, removing duplicate literals does not
+      affect the truth value of a clause.
+    */
     clause simplify() noexcept {
       std::vector<literal> simplified;
       for (literal& i : literals) {
