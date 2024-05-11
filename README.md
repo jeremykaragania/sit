@@ -6,7 +6,7 @@ Clone the repository.
 ```bash
 git clone https://github.com/jeremykaragania/sit.git
 ```
-Include the source file [sit.h](sit/sit.h).
+Include the source file [`sit.h`](sit/sit.h).
 ```cpp
 #include <sit.h>
 ```
