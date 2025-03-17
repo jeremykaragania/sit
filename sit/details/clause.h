@@ -20,6 +20,10 @@ namespace sit {
 
     clause(const std::initializer_list<literal> init) noexcept : literals(init) {}
 
+    /*
+      clause::state returns the state of the current clause. It can either be
+      unsatisfied, satsified, unit, or unresolved.
+    */
     clause_state state() const noexcept {
       std::size_t assigned_1 = 0;
       std::size_t unassigned = 0;
