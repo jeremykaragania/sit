@@ -10,39 +10,50 @@ namespace sit {
   template <typename T>
   void read_dimacs(std::string filename, formula<T>& init_formula, std::vector<variable>& init_variables) {
     std::ifstream ifs(filename, std::ios::in);
+
     if (!ifs.is_open()) {
       throw;
     }
+
     while (1) {
       if ((char)ifs.peek() == 'p') {
         break;
       }
+
       ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
+
     ifs.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
     std::string buffer;
     ifs >> buffer;
     T nf;
+
     if (buffer != nf.name()) {
       throw;
     }
+
     ifs >> buffer;
     std::size_t variable_number = std::stoull(buffer);
     init_variables.resize(variable_number);
     ifs >> buffer;
     std::size_t clause_number = std::stoull(buffer);
     init_formula.clauses.resize(clause_number);
+
     for (clause<T>& i : init_formula.clauses) {
       while (1) {
         ifs >> buffer;
+
         if (buffer == "0" || ifs.eof()) {
           break;
         }
+
         bool complemented = 0;
+
         if (buffer[0] == '-') {
           complemented = 1;
           buffer.erase(buffer.begin());
         }
+
         i.literals.push_back({init_variables[std::stoull(buffer) - 1], complemented});
       }
     }

@@ -20,6 +20,7 @@ int main() {
   // SAT.
   if (c.solve()) {
     std::cout << "SAT\n";
+
     for (std::size_t i = 0; i < x.size(); ++i) {
       std::cout << "X[" << i << "] = " << x[i] << std::endl;
     }

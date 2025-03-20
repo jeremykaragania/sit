@@ -23,7 +23,8 @@ namespace sit {
         if (nf.formula_cond(i)) {
           return 0;
         }
-      };
+      }
+
       return 1;
     }
 

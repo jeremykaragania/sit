@@ -21,6 +21,7 @@ namespace sit {
       if (!_is_assigned) {
         throw;
       }
+
       return value;
     }
 

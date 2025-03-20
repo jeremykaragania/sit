@@ -27,6 +27,7 @@ namespace sit {
     clause_state state() const noexcept {
       std::size_t assigned_1 = 0;
       std::size_t unassigned = 0;
+
       for (const literal& i : literals) {
         if (i.data.is_assigned()) {
           if (i) {
@@ -37,6 +38,7 @@ namespace sit {
           ++unassigned;
         }
       }
+
       if (unassigned == 0) {
         if (assigned_1 == 0) {
           return clause_state::unsatisfied;
@@ -48,6 +50,7 @@ namespace sit {
       else if (unassigned == 1 && assigned_1 == 0) {
         return clause_state::unit;
       }
+
       return clause_state::unresolved;
     }
 
@@ -57,6 +60,7 @@ namespace sit {
           return 1;
         }
       }
+
       return 0;
     }
 
@@ -67,18 +71,22 @@ namespace sit {
     */
     clause simplify() noexcept {
       std::vector<literal> simplified;
+
       for (literal& i : literals) {
         bool include = 1;
+
         for (literal& j : simplified) {
           if (&i.data == &j.data) {
             include = 0;
             break;
           }
         }
+
         if (include) {
           simplified.push_back(i);
         }
       }
+
       return simplified;
     }
 
